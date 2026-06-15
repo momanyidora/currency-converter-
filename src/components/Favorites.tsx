@@ -14,17 +14,11 @@ export default function Favorites({ favorites, onRemove }: Props) {
         favorites.map((pair) => (
           <div key={pair} className="flex justify-between">
             <span>{pair}</span>
+
             <button
               onClick={() => onRemove(pair)}
-              aria-label={'Remove ${pair}'}
-              className="
-    text-red-500
-    hover:text-red-700
-    transition-colors
-    focus:ring-2
-focus:ring-offset-2
-focus:ring-blue-500
-  "
+              aria-label={`Remove ${pair}`}
+              className="text-red-500 hover:text-red-700 transition-colors"
             >
               Remove
             </button>

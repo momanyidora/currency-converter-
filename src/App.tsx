@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import Converter from "./components/Converter";
 import Favorites from "./components/Favorites";
 import RateChart from "./components/RateChart";
+import ConversionLog from "./components/ConversionLog";
+import Comparison from "./components/Comparison";
 import { getCurrencies, getHistoricalRates } from "./services/api";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 
@@ -10,10 +12,24 @@ interface ChartData {
   rate: number;
 }
 
+interface LogItem {
+  id: string;
+  from: string;
+  to: string;
+  amount: number;
+  result: number;
+}
+
 function App() {
   const [currencies, setCurrencies] = useState<string[]>([]);
   const [favorites, setFavorites] = useLocalStorage<string[]>("favorites", []);
+
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [logs, setLogs] = useState<LogItem[]>([]);
+
+  const [from, setFrom] = useState("USD");
+  const [to, setTo] = useState("EUR");
+  const [amount, setAmount] = useState(1);
 
   const [loadingCurrencies, setLoadingCurrencies] = useState(true);
   const [loadingChart, setLoadingChart] = useState(true);
@@ -22,13 +38,9 @@ function App() {
   useEffect(() => {
     async function loadCurrencies() {
       try {
-        setLoadingCurrencies(true);
-
         const data = await getCurrencies();
-
         setCurrencies(Object.keys(data));
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError("Failed to load currencies.");
       } finally {
         setLoadingCurrencies(false);
@@ -41,8 +53,6 @@ function App() {
   useEffect(() => {
     async function loadChart() {
       try {
-        setLoadingChart(true);
-
         const end = new Date().toISOString().split("T")[0];
 
         const startDate = new Date();
@@ -50,18 +60,17 @@ function App() {
 
         const start = startDate.toISOString().split("T")[0];
 
-        const data = await getHistoricalRates("USD", "EUR", start, end);
+        const data = await getHistoricalRates(from, to, start, end);
 
         const formatted = Object.entries(
           data.rates as Record<string, Record<string, number>>,
         ).map(([date, value]) => ({
           date,
-          rate: value.EUR,
+          rate: value[to],
         }));
 
         setChartData(formatted);
-      } catch (err) {
-        console.error(err);
+      } catch {
         setError("Failed to load chart data.");
       } finally {
         setLoadingChart(false);
@@ -69,62 +78,52 @@ function App() {
     }
 
     loadChart();
-  }, []);
+  }, [from, to]);
+
+  const addLog = (log: Omit<LogItem, "id">) => {
+    setLogs([{ ...log, id: crypto.randomUUID() }, ...logs]);
+  };
+
+  const clearLogs = () => setLogs([]);
 
   const removeFavorite = (pair: string) => {
     setFavorites(favorites.filter((item) => item !== pair));
   };
 
   if (loadingCurrencies) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-100 dark:bg-slate-900">
-        <p className="text-slate-600 dark:text-slate-300">
-          Loading currencies...
-        </p>
-      </div>
-    );
+    return <div className="p-6">Loading currencies...</div>;
   }
 
   return (
-    <main className="min-h-screen bg-slate-100 dark:bg-slate-900 p-4 sm:p-6 space-y-6">
-      {error && (
-        <div
-          className="
-            bg-red-100
-            border
-            border-red-300
-            text-red-700
-            px-4
-            py-3
-            rounded-lg
-            dark:bg-red-900/30
-            dark:text-red-300
-            dark:border-red-700
-          "
-        >
-          {error}
-        </div>
-      )}
+    <main className="min-h-screen p-4 space-y-6">
+      {error && <div className="text-red-500">{error}</div>}
 
-      <Converter currencies={currencies} />
+      <Converter
+        currencies={currencies}
+        from={from}
+        to={to}
+        amount={amount}
+        setFrom={setFrom}
+        setTo={setTo}
+        setAmount={setAmount}
+        onConverted={addLog}
+      />
 
       <Favorites favorites={favorites} onRemove={removeFavorite} />
 
+      <ConversionLog logs={logs} clearLogs={clearLogs} />
+
+      <Comparison
+        amount={amount}
+        fromCurrency={from}
+        rates={currencies.slice(0, 4).map((c) => ({
+          currency: c,
+          value: 1,
+        }))}
+      />
+
       {loadingChart ? (
-        <div
-          className="
-            bg-white
-            dark:bg-slate-800
-            rounded-lg
-            shadow-md
-            h-[300px]
-            flex
-            items-center
-            justify-center
-          "
-        >
-          <p className="text-slate-500 dark:text-slate-300">Loading chart...</p>
-        </div>
+        <div>Loading chart...</div>
       ) : (
         <RateChart data={chartData} />
       )}
