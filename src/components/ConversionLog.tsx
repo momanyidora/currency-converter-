@@ -14,11 +14,26 @@ interface Props {
 
 export default function ConversionLog({ logs, clearLogs }: Props) {
   return (
-    <div className="bg-white p-4 rounded-lg">
+    <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
       <div className="flex justify-between">
         <h2 className="font-bold">Conversion Log</h2>
 
-        <button onClick={clearLogs}>Clear</button>
+        <button
+          onClick={clearLogs}
+          className="
+    px-3 py-1
+    rounded
+    bg-red-500
+    hover:bg-red-600
+    text-white
+    transition-colors
+    focus:ring-2
+focus:ring-offset-2
+focus:ring-blue-500
+  "
+        >
+          Clear
+        </button>
       </div>
 
       {logs.map((log, index) => (

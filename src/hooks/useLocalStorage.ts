@@ -3,8 +3,11 @@ import { useState } from "react";
 export function useLocalStorage<T>(key: string, initialValue: T) {
   const [storedValue, setStoredValue] = useState<T>(() => {
     const item = localStorage.getItem(key);
-
-    return item ? JSON.parse(item) : initialValue;
+    try {
+      return item ? JSON.parse(item) : initialValue;
+    } catch {
+      return initialValue;
+    }
   });
 
   const setValue = (value: T) => {

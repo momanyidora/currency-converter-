@@ -7,8 +7,13 @@ import {
   ResponsiveContainer,
 } from "recharts";
 
+interface RateData {
+  date: string;
+  rate: number;
+}
+
 interface Props {
-  data: any[];
+  data: RateData[];
 }
 
 export default function RateChart({ data }: Props) {
