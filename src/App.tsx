@@ -81,7 +81,7 @@ function App() {
   }, [from, to]);
 
   const addLog = (log: Omit<LogItem, "id">) => {
-    setLogs([{ ...log, id: crypto.randomUUID() }, ...logs]);
+    setLogs((prev) => [{ ...log, id: crypto.randomUUID() }, ...prev]);
   };
 
   const clearLogs = () => setLogs([]);
