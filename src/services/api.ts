@@ -8,10 +8,10 @@ export const getCurrencies = async () => {
 };
 
 export const getLatestRate = async (from: string, to: string) => {
-  const res = await axios.get(`${BASE_URL}/latest?base=${from}&symbols=${to}`);
-
+  const res = await axios.get(`${BASE_URL}/latest?from=${from}&to=${to}`);
   return res.data;
 };
+
 
 export const getHistoricalRates = async (
   from: string,

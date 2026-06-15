@@ -28,45 +28,39 @@ export default function Converter({
   setAmount,
   onConverted,
 }: Props) {
-  const [result, setResult] = useState(0);
   const [rate, setRate] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const result = amount * rate;
 
   const swapCurrencies = () => {
     setFrom(to);
     setTo(from);
   };
 
+  // Fetch rate only when currencies change, NOT amount
   useEffect(() => {
     const handler = setTimeout(async () => {
       try {
         setLoading(true);
         setError("");
-
         const data = await getLatestRate(from, to);
-        const newRate = data.rates[to];
-
-        setRate(newRate);
-        const converted = amount * newRate;
-
-        setResult(converted);
-
-        onConverted?.({
-          from,
-          to,
-          amount,
-          result: converted,
-        });
+        setRate(data.rates[to]);
       } catch {
         setError("Conversion failed");
       } finally {
         setLoading(false);
       }
-    }, 400); // debounce
+    }, 400);
 
     return () => clearTimeout(handler);
-  }, [amount, from, to, onConverted]);
+  }, [from, to]); // ← amount removed, onConverted removed
+
+  const handleLogConversion = () => {
+    if (!result) return;
+    onConverted?.({ from, to, amount, result });
+  };
 
   return (
     <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -85,14 +79,12 @@ export default function Converter({
           value={from}
           onChange={setFrom}
         />
-
         <button
           onClick={swapCurrencies}
           className="px-3 py-2 bg-blue-500 text-white rounded"
         >
           ⇄
         </button>
-
         <CurrencySelect currencies={currencies} value={to} onChange={setTo} />
       </div>
 
@@ -110,6 +102,14 @@ export default function Converter({
           </>
         )}
       </div>
+
+      <button
+        onClick={handleLogConversion}
+        disabled={!result || loading}
+        className="mt-3 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded disabled:opacity-40"
+      >
+        Log Conversion
+      </button>
     </div>
   );
 }
