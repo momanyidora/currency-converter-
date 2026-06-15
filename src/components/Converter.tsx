@@ -17,6 +17,11 @@ export default function Converter({ currencies }: Props) {
 
   const [rate, setRate] = useState(0);
 
+  const swapCurrencies = () => {
+    setFrom(to);
+    setTo(from);
+  };
+
   useEffect(() => {
     async function convert() {
       const data = await getLatestRate(from, to);
@@ -40,24 +45,33 @@ export default function Converter({ currencies }: Props) {
         onChange={(e) => setAmount(Number(e.target.value))}
         className="border p-2 w-full mb-4"
       />
-
-      <div className="flex gap-4">
+      <div className="flex gap-4 items-center">
         <CurrencySelect
           currencies={currencies}
           value={from}
           onChange={setFrom}
         />
 
-        <CurrencySelect currencies={currencies} value={to} onChange={setTo} />
+        <button
+          onClick={swapCurrencies}
+          className="px-3 py-2 bg-blue-500 text-white rounded"
+        >
+          ⇄
+        </button>
+
+        <CurrencySelect
+          currencies={currencies}
+          value={to}
+          onChange={setTo}
+        />
       </div>
 
-      <p className="mt-4">
-        Rate: 1 {from} = {rate} {to}
-      </p>
-
-      <h3 className="text-2xl font-bold mt-2">
-        {result.toFixed(2)} {to}
-      </h3>
+      <div className="mt-4 p-4 bg-gray-100 rounded">
+        <p className="text-lg font-semibold">
+          {amount} {from} = {result.toFixed(2)} {to}
+        </p>
+        <p className="text-sm text-gray-600">Rate: {rate.toFixed(4)}</p>
+      </div>
     </div>
   );
 }
