@@ -90,11 +90,14 @@ function App() {
 
         const formatted = Object.entries(
           data.rates as Record<string, Record<string, number>>,
-        ).map(([date, value]) => ({
-          date,
-          rate: value[to],
-        }));
-
+        )
+          .map(([date, value]) => ({
+            date,
+            rate: value[to],
+          }))
+          .sort(
+            (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime(),
+          );
         setChartData(formatted);
       } catch {
         setChartError("Failed to load chart data");
@@ -134,7 +137,21 @@ function App() {
       ...prev,
     ]);
   };
-
+  const removeLog = (id: string) => {
+    setLogs((prev) => prev.filter((log) => log.id !== id));
+  };
+  const addFavorite = (pair: string) => {
+    if (!favorites.includes(pair)) {
+      setFavorites([...favorites, pair]);
+    }
+  };
+  
+  const loadFavorite = (pair: string) => {
+    const [base, target] = pair.split("/");
+  
+    setFrom(base);
+    setTo(target);
+  };
   const removeFavorite = (pair: string) => {
     setFavorites(favorites.filter((item) => item !== pair));
   };
@@ -155,15 +172,16 @@ function App() {
         <h1 className="text-3xl font-bold mb-6">CHECK THE RATE</h1>
 
         <Converter
-          currencies={currencies}
-          from={from}
-          to={to}
-          amount={amount}
-          setFrom={setFrom}
-          setTo={setTo}
-          setAmount={setAmount}
-          onConverted={addLog}
-        />
+  currencies={currencies}
+  from={from}
+  to={to}
+  amount={amount}
+  setFrom={setFrom}
+  setTo={setTo}
+  setAmount={setAmount}
+  onConverted={addLog}
+  onFavorite={addFavorite}
+/>
       </div>
 
       <div className="mt-10">
@@ -198,11 +216,19 @@ function App() {
         )}
 
         {activeTab === "favorites" && (
-          <Favorites favorites={favorites} onRemove={removeFavorite} />
+          <Favorites
+            favorites={favorites}
+            onRemove={removeFavorite}
+            onLoad={loadFavorite}
+          />
         )}
 
         {activeTab === "log" && (
-          <ConversionLog logs={logs} clearLogs={() => setLogs([])} />
+          <ConversionLog
+            logs={logs}
+            clearLogs={() => setLogs([])}
+            removeLog={removeLog}
+          />
         )}
       </div>
     </Layout>

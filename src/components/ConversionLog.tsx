@@ -9,26 +9,33 @@ interface LogItem {
 interface Props {
   logs: LogItem[];
   clearLogs: () => void;
+  removeLog: (id: string) => void;
 }
 
-export default function ConversionLog({ logs, clearLogs }: Props) {
+export default function ConversionLog({ logs, clearLogs, removeLog }: Props) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-      <div className="flex justify-between items-center">
-        <h2 className="font-bold">Conversion Log</h2>
+    <div className="bg-[#15171d] rounded-2xl p-6">
+      <div className="flex justify-between mb-6">
+        <h2 className="text-xl font-bold">Conversion Log</h2>
 
-        <button
-          onClick={clearLogs}
-          className="px-3 py-1 rounded bg-red-500 hover:bg-red-600 text-white transition-colors"
-        >
-          Clear
+        <button onClick={clearLogs} className="bg-red-500 px-4 py-2 rounded-xl">
+          Clear All
         </button>
       </div>
 
-      <div className="mt-4 space-y-2">
+      <div className="space-y-3">
         {logs.map((log) => (
-          <div key={log.id} className="text-sm">
-            {log.amount} {log.from} → {log.result.toFixed(2)} {log.to}
+          <div
+            key={log.id}
+            className="flex justify-between bg-[#1b1d25] p-4 rounded-xl"
+          >
+            <span>
+              {log.amount} {log.from} → {log.result.toFixed(2)} {log.to}
+            </span>
+
+            <button onClick={() => removeLog(log.id)} className="text-red-400">
+              Delete
+            </button>
           </div>
         ))}
       </div>

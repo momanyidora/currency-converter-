@@ -1,29 +1,30 @@
 interface Props {
   favorites: string[];
   onRemove: (pair: string) => void;
+  onLoad: (pair: string) => void;
 }
 
-export default function Favorites({ favorites, onRemove }: Props) {
+export default function Favorites({ favorites, onRemove, onLoad }: Props) {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
-      <h2 className="font-bold mb-2">Favorite Pairs</h2>
+    <div className="bg-[#15171d] rounded-2xl p-6">
+      <h2 className="text-xl font-bold mb-4">Favorite Pairs</h2>
 
       {favorites.length === 0 ? (
-        <p>No favorites yet</p>
+        <p className="text-gray-400">No favorites yet</p>
       ) : (
-        favorites.map((pair) => (
-          <div key={pair} className="flex justify-between">
-            <span>{pair}</span>
+        <div className="space-y-3">
+          {favorites.map((pair) => (
+            <div key={pair} className="flex items-center justify-between">
+              <button onClick={() => onLoad(pair)} className="text-lime-400">
+                {pair}
+              </button>
 
-            <button
-              onClick={() => onRemove(pair)}
-              aria-label={`Remove ${pair}`}
-              className="text-red-500 hover:text-red-700 transition-colors"
-            >
-              Remove
-            </button>
-          </div>
-        ))
+              <button onClick={() => onRemove(pair)} className="text-red-400">
+                Remove
+              </button>
+            </div>
+          ))}
+        </div>
       )}
     </div>
   );

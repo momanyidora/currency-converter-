@@ -1,3 +1,5 @@
+import Select from "react-select";
+
 interface Props {
   currencies: string[];
   value: string;
@@ -5,24 +7,25 @@ interface Props {
 }
 
 export default function CurrencySelect({ currencies, value, onChange }: Props) {
+  const options = currencies.map((currency) => ({
+    value: currency,
+    label: currency,
+  }));
+
   return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="
-      bg-[#252730]
-      text-white
-      px-4
-      py-2
-      rounded-xl
-      outline-none
-    "
-    >
-      {currencies.map((currency) => (
-        <option key={currency} value={currency}>
-          {currency}
-        </option>
-      ))}
-    </select>
+    <Select
+      value={{
+        value,
+        label: value,
+      }}
+      options={options}
+      onChange={(option) => {
+        if (option) {
+          onChange(option.value);
+        }
+      }}
+      isSearchable
+      className="min-w-[140px]"
+    />
   );
 }
