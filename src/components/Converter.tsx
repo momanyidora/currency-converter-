@@ -63,14 +63,20 @@ export default function Converter({
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+    <div className="bg-[#15171d] rounded-3xl p-6">
       <h2 className="text-xl font-bold mb-4">Currency Converter</h2>
 
       <input
         type="number"
         value={amount}
         onChange={(e) => setAmount(Number(e.target.value))}
-        className="border p-2 w-full mb-4 rounded"
+        className="
+        w-full
+        bg-transparent
+        text-5xl
+        font-bold
+        outline-none
+        "
       />
 
       <div className="flex flex-col sm:flex-row gap-4 items-center">
@@ -81,14 +87,26 @@ export default function Converter({
         />
         <button
           onClick={swapCurrencies}
-          className="px-3 py-2 bg-blue-500 text-white rounded"
-        >
-          ⇄
-        </button>
+          className="
+bg-[#252730]
+rounded-xl
+w-14
+h-14
+text-2xl
+"
+        ></button>
         <CurrencySelect currencies={currencies} value={to} onChange={setTo} />
       </div>
 
-      <div className="mt-4 p-4 bg-gray-100 rounded">
+      <div
+        className="
+mt-6
+border-t
+border-gray-800
+pt-4
+text-gray-300
+"
+      >
         {loading ? (
           <p>Converting...</p>
         ) : error ? (
@@ -106,7 +124,14 @@ export default function Converter({
       <button
         onClick={handleLogConversion}
         disabled={!result || loading}
-        className="mt-3 px-4 py-2 bg-green-600 hover:bg-green-700 text-white rounded disabled:opacity-40"
+        className="
+        bg-lime-400
+        text-black
+        font-semibold
+        px-5
+        py-3
+        rounded-xl
+        "
       >
         Log Conversion
       </button>

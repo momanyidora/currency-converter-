@@ -1,11 +1,4 @@
-import {
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
+import { ResponsiveContainer, AreaChart, Area, XAxis, Tooltip } from "recharts";
 
 interface RateData {
   date: string;
@@ -18,15 +11,21 @@ interface Props {
 
 export default function RateChart({ data }: Props) {
   return (
-    <div className="h-[300px]">
-      <ResponsiveContainer>
-        <LineChart data={data}>
-          <XAxis dataKey="date" />
-          <YAxis />
+    <div className="bg-[#15171d] rounded-2xl p-6 h-[450px]">
+      <ResponsiveContainer width="100%" height="100%">
+        <AreaChart data={data}>
+          <XAxis dataKey="date" tick={{ fill: "#999" }} />
+
           <Tooltip />
 
-          <Line type="monotone" dataKey="rate" />
-        </LineChart>
+          <Area
+            type="monotone"
+            dataKey="rate"
+            stroke="#C8FF3D"
+            fill="#C8FF3D"
+            fillOpacity={0.3}
+          />
+        </AreaChart>
       </ResponsiveContainer>
     </div>
   );

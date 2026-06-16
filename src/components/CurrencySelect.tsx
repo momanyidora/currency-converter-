@@ -10,13 +10,13 @@ export default function CurrencySelect({ currencies, value, onChange }: Props) {
       value={value}
       onChange={(e) => onChange(e.target.value)}
       className="
-      border
-      rounded
-      p-2
-      focus:outline-none
-      focus:ring-2
-      focus:ring-blue-500
-      "
+      bg-[#252730]
+      text-white
+      px-4
+      py-2
+      rounded-xl
+      outline-none
+    "
     >
       {currencies.map((currency) => (
         <option key={currency} value={currency}>
