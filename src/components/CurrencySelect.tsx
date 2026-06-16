@@ -25,7 +25,44 @@ export default function CurrencySelect({ currencies, value, onChange }: Props) {
         }
       }}
       isSearchable
-      className="min-w-[140px]"
+      className="min-w-35"
+      styles={{
+        control: (provided) => ({
+          ...provided,
+          backgroundColor: "#ffffff",
+          borderColor: "#2d3748",
+          minHeight: "48px",
+        }),
+
+        singleValue: (provided) => ({
+          ...provided,
+          color: "#000000",
+          fontWeight: 500,
+        }),
+
+        input: (provided) => ({
+          ...provided,
+          color: "#000000",
+        }),
+
+        menu: (provided) => ({
+          ...provided,
+          backgroundColor: "#ffffff",
+          color: "#000000",
+        }),
+
+        option: (provided, state) => ({
+          ...provided,
+          backgroundColor: state.isFocused ? "#e5e7eb" : "#ffffff",
+          color: "#000000",
+          cursor: "pointer",
+        }),
+
+        placeholder: (provided) => ({
+          ...provided,
+          color: "#6b7280",
+        }),
+      }}
     />
   );
 }
